@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Remote Desktop Manager</title>
+<HTA:APPLICATION 
+     APPLICATIONNAME="RDP Launcher"
+     SCROLL="no"
+     SINGLEINSTANCE="yes"
+     WINDOWSTATE="normal"
+     WIDTH="400"
+     HEIGHT="250"
+>
+
+<script language="VBScript">
+    Sub Window_OnLoad
+        ' Center the window on screen
+        window.resizeTo 420, 280
+    End Sub
+
+    Sub LaunchRDP
+        Dim objShell, strComputer, strUser
+        
+        ' Retrieve values from the HTML inputs
+        strComputer = document.getElementById("computer").value
+        strUser = document.getElementById("username").value
+        
+        If Trim(strComputer) = "" Then
+            MsgBox "Please enter a computer name or IP address.", 48, "Error"
+            Exit Sub
+        End If
+        
+        Set objShell = CreateObject("WScript.Shell")
+        
+        If Trim(strUser) = "" Then
+            objShell.Run "mstsc /v:" & strComputer
+        Else
+            objShell.Run "mstsc /v:" & strComputer & " /user:" & strUser
+        End If
+        
+        Set objShell = Nothing
+        window.close() ' Closes the GUI after launching
+    End Sub
+</script>
+
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f3f3; margin: 20px; font-size: 14px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input[type="text"] { width: 100%; padding: 5px; margin-top: 5px; box-sizing: border-box; }
+    button { margin-top: 20px; width: 100%; padding: 8px; background-color: #0078d7; color: white; border: none; cursor: pointer; font-weight: bold; }
+    button:hover { background-color: #005a9e; }
+</style>
+</head>
+
+<body>
+    <label for="computer">Computer Name or IP:</label>
+    <input type="text" id="computer" value="192.168.1.100">
+
+    <label for="username">Username (Optional):</label>
+    <input type="text" id="username" value="Administrator">
+
+    <button onclick="LaunchRDP()">Connect via RDP</button>
+</body>
+</html>
